@@ -18,6 +18,10 @@ class TweetViewModel(private val repository: TweetRepository) : ViewModel() {
 
 
     )
+    fun filtraTweetsPelo(texto:String):List<Tweet>{
+        val tweets = tweet()
+        return tweets.filter { tweet -> tweet.mensagem.contains(texto,true)  }
+    }
 
 
 }
