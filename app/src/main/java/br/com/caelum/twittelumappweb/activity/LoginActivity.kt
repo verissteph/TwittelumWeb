@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import br.com.caelum.twittelumappweb.databinding.ActivityLoginBinding
 import br.com.caelum.twittelumappweb.modelo.Usuario
@@ -22,23 +21,24 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.loginCriar.setOnClickListener { viewModel.cria(usuarioDaTela())}
-        binding.loginEntrar.setOnClickListener { viewModel.loga(usuarioDaTela())}
+        binding.loginCriar.setOnClickListener { viewModel.cria(usuarioDaTela()) }
+        binding.loginEntrar.setOnClickListener { viewModel.loga(usuarioDaTela()) }
 
-        viewModel.getErro().observe(this){
-            it?.let{
-                Toast.makeText(this,it.message,Toast.LENGTH_LONG).show()
-                Log.i("error",it.message)
+        viewModel.getErro().observe(this) {
+            it?.let {
+                Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                Log.i("error", it.message)
             }
         }
-        viewModel.getUsuario().observe(this){
-            it?.let{
+        viewModel.getUsuario().observe(this) {
+            it?.let {
                 vaiParaMain()
             }
         }
     }
-    private fun vaiParaMain(){
-        val intent = Intent(this,MainActivity::class.java)
+
+    private fun vaiParaMain() {
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
         val nome = binding.loginCampoNome.text.toString()
         val senha = binding.loginCampoSenha.text.toString()
         val username = binding.loginCampoUsername.text.toString()
-        return Usuario(nome, senha, username)
+        return Usuario(nome = nome, senha = senha, username = username)
     }
 
 }
