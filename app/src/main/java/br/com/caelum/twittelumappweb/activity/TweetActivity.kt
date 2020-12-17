@@ -7,12 +7,14 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import br.com.caelum.twittelumappweb.R
 import br.com.caelum.twittelumappweb.databinding.ActivityTweetBinding
@@ -37,9 +39,18 @@ class TweetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTweetBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+       setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        viewModel.falha().observe(this, Observer { excecao ->
+            Toast.makeText(this, "erro:${excecao?.message}", Toast.LENGTH_LONG).show()
+            Log.e("Tweet", "falha na requisicao", excecao)
+        })
+        viewModel.novoTweet().observe(this, Observer { tweet ->
+            Toast.makeText(this, "Tweet salvo:${tweet?.mensagem}", Toast.LENGTH_LONG).show()
+            Log.i("Tweet", "$tweet criado na API")
+        })
 
     }
 

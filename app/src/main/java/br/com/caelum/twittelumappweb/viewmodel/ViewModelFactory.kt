@@ -5,27 +5,28 @@ import androidx.lifecycle.ViewModelProvider
 import br.com.caelum.twittelumappweb.data.TweetRepository
 import br.com.caelum.twittelumappweb.data.UsuarioRepository
 import br.com.caelum.twittelumappweb.webservices.InicializadorDoRetrofit
+import br.com.caelum.twittelumappweb.webservices.TweetWebClient
 import br.com.caelum.twittelumappweb.webservices.UsuarioWebClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
 object ViewModelFactory : ViewModelProvider.NewInstanceFactory() {
-    private val retrofit = InicializadorDoRetrofit.retrofit
-    private val usuarioWebClient = UsuarioWebClient(retrofit)
-    private val tweetRepository = TweetRepository()
-    private val usuarioRepository = UsuarioRepository(usuarioWebClient)
-
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = when (modelClass) {
         TweetViewModel::class.java -> {
-            TweetViewModel(tweetRepository) as T
+            TweetViewModel(Injetor.getTweetRepository, Injetor.getUsuarioRepository) as T
         }
         else -> {
-            UsuarioViewModel(usuarioRepository) as T
+            UsuarioViewModel(Injetor.getUsuarioRepository) as T
         }
     }
+}
 
+object Injetor {
+    private val getRetrofit = InicializadorDoRetrofit.retrofit
+    private val getTweetWebClient = TweetWebClient(getRetrofit)
+    val getTweetRepository = TweetRepository(getTweetWebClient)
 
-
-
+    private val getUsuarioWebClient = UsuarioWebClient(getRetrofit)
+    val getUsuarioRepository: UsuarioRepository = UsuarioRepository(getUsuarioWebClient)
 }

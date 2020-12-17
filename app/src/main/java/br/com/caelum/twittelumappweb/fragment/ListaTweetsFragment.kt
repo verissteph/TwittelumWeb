@@ -15,6 +15,7 @@ class ListaTweetsFragment : Fragment() {
     private val viewModel: TweetViewModel by lazy {
         ViewModelProvider(activity!!,ViewModelFactory).get(TweetViewModel::class.java)
     }
+
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -22,8 +23,11 @@ class ListaTweetsFragment : Fragment() {
         val binding = FragmentListaTweetsBinding.inflate(inflater,
                 container,
                 false)
-        val lista = viewModel.tweet()
-        binding.listaTweets.adapter = TweetAdapter(lista)
+
+        viewModel.tweets().observe(this){
+            it?.let { binding.listaTweets.adapter = TweetAdapter(it)
+            }
+        }
         return binding.root
     }
 
