@@ -9,6 +9,7 @@ import br.com.caelum.twittelumappweb.R
 import br.com.caelum.twittelumappweb.databinding.ActivityMainBinding
 import br.com.caelum.twittelumappweb.fragment.BuscadorDeTweetsFragment
 import br.com.caelum.twittelumappweb.fragment.ListaTweetsFragment
+import br.com.caelum.twittelumappweb.fragment.MapaFragment
 import br.com.caelum.twittelumappweb.viewmodel.TweetViewModel
 import br.com.caelum.twittelumappweb.viewmodel.ViewModelFactory
 import com.google.android.gms.maps.SupportMapFragment
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.menu_mapa-> {
-                    exibe(SupportMapFragment())
+                    exibe(MapaFragment())
                     true
                                     }
                 else -> {
