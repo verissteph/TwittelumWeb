@@ -2,6 +2,7 @@ package br.com.caelum.twittelumappweb.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -19,10 +20,12 @@ import androidx.lifecycle.ViewModelProvider
 import br.com.caelum.twittelumappweb.R
 import br.com.caelum.twittelumappweb.databinding.ActivityTweetBinding
 import br.com.caelum.twittelumappweb.decodificaParaBase64
+import br.com.caelum.twittelumappweb.modelo.GPS
 import br.com.caelum.twittelumappweb.modelo.Tweet
 import br.com.caelum.twittelumappweb.viewmodel.TweetViewModel
 import br.com.caelum.twittelumappweb.viewmodel.ViewModelFactory
 import java.io.File
+import java.util.jar.Manifest
 
 
 class TweetActivity : AppCompatActivity() {
@@ -30,7 +33,7 @@ class TweetActivity : AppCompatActivity() {
     private val viewModel: TweetViewModel by lazy {
         ViewModelProvider(this, ViewModelFactory).get(TweetViewModel::class.java)
     }
-
+    private lateinit var gps: GPS
     private var localFoto: String? = null
 
     lateinit var binding: ActivityTweetBinding
@@ -43,6 +46,13 @@ class TweetActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        gps = GPS(this)
+        if(checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+            gps.fazBusca()
+        }else{
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),125)
+        }
+
         viewModel.falha().observe(this, Observer { excecao ->
             Toast.makeText(this, "erro:${excecao?.message}", Toast.LENGTH_LONG).show()
             Log.e("Tweet", "falha na requisicao", excecao)
@@ -54,7 +64,22 @@ class TweetActivity : AppCompatActivity() {
 
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == 123){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                gps.fazBusca()
+            }else{
+                Toast.makeText(this,"Nao será possivel usar as funcionalidades dessa tela",Toast.LENGTH_LONG).show()
+            }
+        }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        gps.cancela()
+    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
         menuInflater.inflate(R.menu.tweet_menu, menu)
@@ -111,6 +136,7 @@ class TweetActivity : AppCompatActivity() {
     }
 
     fun criaTweet(): Tweet {
+        val(latitude,longitude) = gps.coordenadas()
 
         val campoDeMensagemDoTweet = binding.tweetMensagem
 
@@ -118,7 +144,7 @@ class TweetActivity : AppCompatActivity() {
 
         val foto: String? = binding.tweetFoto.tag as String?
 
-        return Tweet(mensagemDoTweet, foto)
+        return Tweet(mensagemDoTweet, foto,latitude,longitude)
     }
 
 

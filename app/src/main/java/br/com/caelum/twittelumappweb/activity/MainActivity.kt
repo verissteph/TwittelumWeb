@@ -11,6 +11,7 @@ import br.com.caelum.twittelumappweb.fragment.BuscadorDeTweetsFragment
 import br.com.caelum.twittelumappweb.fragment.ListaTweetsFragment
 import br.com.caelum.twittelumappweb.viewmodel.TweetViewModel
 import br.com.caelum.twittelumappweb.viewmodel.ViewModelFactory
+import com.google.android.gms.maps.SupportMapFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -48,6 +49,11 @@ class MainActivity : AppCompatActivity() {
                     exibe(BuscadorDeTweetsFragment())
                     true
                 }
+
+                R.id.menu_mapa-> {
+                    exibe(SupportMapFragment())
+                    true
+                                    }
                 else -> {
                     false
                 }
